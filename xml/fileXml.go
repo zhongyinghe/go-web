@@ -11,8 +11,8 @@ type Result struct {
 }
 
 type Person struct {
-	Name      string
-	Age       int
+	Name      string `xml:",attr"`
+	Age       int    `xml:",attr"`
 	Career    string
 	Interests Interests
 }
