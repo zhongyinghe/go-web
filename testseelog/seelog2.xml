@@ -1,0 +1,15 @@
+<seelog type="asynctimer" asyncinterval="5000000" minlevel="trace" maxlevel="error">  
+   <outputs formatid="common">  
+     
+     <filter levels="error">
+         <rollingfile type="date" filename="./test.error.log" datepattern="02.01.2006" fullname="true" maxrolls="30"/>  
+     </filter>
+     <filter levels="info">
+         <rollingfile type="date" filename="./test.info.log" datepattern="02.01.2006" fullname="true" maxrolls="30"/>  
+     </filter>
+   </outputs>  
+     
+    <formats>  
+        <format id="common" format="%Date %Time [%LEV] [%File:%Line] [%Func] %Msg%n" />  
+    </formats>  
+</seelog>  
