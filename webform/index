@@ -1,0 +1,4 @@
+1、往浏览器中输出内容的三种方式
+	w.Write([]byte("hello"))
+    io.WriteString(w, "hello io.writestring")
+    fmt.Fprintf(w, "abc")
