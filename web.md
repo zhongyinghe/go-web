@@ -97,6 +97,55 @@ func (sh serverHandler) ServeHTTP(rw ResponseWriter, req *Request) {
 }
 ```
 这里是关键，如果在原先的http.ListenAndServe()这里，设置了第二个参数，则它就会按照设置的路由进行处理,个人路由器设计就是在这第二个参数入手。如果
-没有设置第二个参数，则它会调用默认的处理handler:DefaultServeMux
+没有设置第二个参数，则它会调用默认的处理handler:DefaultServeMux<br>
+<br>
+那么DefaultServeMux是一个什么样的对象?它是ServeMux对象，它的代码定义如下:
+```go
+type ServeMux struct {
+	mu    sync.RWMutex
+	m     map[string]muxEntry
+	hosts bool // whether any patterns contain hostnames
+}
+```
+而它的ServeHTTP()方法如下:
+```
+func (mux *ServeMux) ServeHTTP(w ResponseWriter, r *Request) {
+	if r.RequestURI == "*" {
+		if r.ProtoAtLeast(1, 1) {
+			w.Header().Set("Connection", "close")
+		}
+		w.WriteHeader(StatusBadRequest)
+		return
+	}
+	h, _ := mux.Handler(r)//对请求进行函数匹配
+	h.ServeHTTP(w, r)
+}
+```
+当它匹配到Handler对象，则调用该对象的ServeHTTP()方法,那么该对象是怎么样的呢?
+Handler是接口,代码如下:
+```
+type Handler interface {
+	ServeHTTP(ResponseWriter, *Request)
+}
+```
+而HandlerFunc实现了该接口,它的代码如下:
+```
+// Handler that calls f.
+type HandlerFunc func(ResponseWriter, *Request)
 
+// ServeHTTP calls f(w, r).
+func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+	f(w, r)
+}
+```
+当我们在main()函数中调用http.HandleFunc("/", sayhelloName)时,该sayhellName()函数必须是HandlerFunc类型(定义函数类型，让相同签名的函数自动实现某个接口)。所以终极会调用如sayhelloName()这样的函数.那么sayhelloName这样的函数保存在哪里呢?<br>
+它们保存在ServeMux结构体的m中,这个m是一个map[string]muxEntry类型，而muxEntry的代码如下:
+```
+type muxEntry struct {
+	explicit bool
+	h        Handler
+	pattern  string
+}
+```
+那么我们每次调用http.HandleFunc()时都会创建一个muxEntry对象，并保存进ServeMux的m中，以便在请求时进行匹配
 
