@@ -26,3 +26,6 @@
 		Read();读取数据到byte中
 		ReadAt();从指定的位置开始读数据到byte中
 		ioutil.ReadFile();从文件中一次性读取全部内容进byte中
+		
+	(6)在文件末尾追加内容
+		file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_APPEND, 0666)
