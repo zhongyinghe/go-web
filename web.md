@@ -81,6 +81,22 @@ func (srv *Server) Serve(l net.Listener) error {
 	}
 }
 ```
-可以看出，它使用l.Accept()等待用户请求的到来，如果有请求到来则创建conn对象(c := srv.newConn(rw)),然后开启goroutine:go c.serve(ctx)<br>
-可以看出，每个http请求都会开启一个goroutine
+可以看出，它使用l.Accept()等待用户请求的到来，如果有请求到来则创建conn对象(c := srv.newConn(rw)),然后开启goroutine:`go c.serve(ctx)`<br>
+可以看出，每个http请求都会开启一个goroutine,这就是它高并发的体现.<br>
+而c.serve(ctx)方法会调用serverHandler的ServeHTTP()方法,而ServeHTTP()的代码如下:
+```
+func (sh serverHandler) ServeHTTP(rw ResponseWriter, req *Request) {
+	handler := sh.srv.Handler
+	if handler == nil {
+		handler = DefaultServeMux
+	}
+	if req.RequestURI == "*" && req.Method == "OPTIONS" {
+		handler = globalOptionsHandler{}
+	}
+	handler.ServeHTTP(rw, req)
+}
+```
+这里是关键，如果在原先的http.ListenAndServe()这里，设置了第二个参数，则它就会按照设置的路由进行处理,个人路由器设计就是在这第二个参数入手。如果
+没有设置第二个参数，则它会调用默认的处理handler:DefaultServeMux
+
 
