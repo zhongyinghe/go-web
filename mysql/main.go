@@ -59,7 +59,7 @@ func main() {
 	stmt, err = db.Prepare("delete from userinfo where uid=?")
 	checkErr(err)
 
-	res, err = stmt.Exec(3)
+	res, err = stmt.Exec(4)
 	checkErr(err)
 
 	affect, err = res.RowsAffected()
