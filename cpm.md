@@ -1,7 +1,7 @@
 1、性能监控的目标:`定位那些地方耗cpu,那些地方耗内存`<br>
 2、怎么做?(个人要把路由指向net/hhtp/pprof包下的函数)<br>
-  1)、go tool pprof http://xxxx/debug/pprof/profile 针对cpu的<br>
-      go tool pprof http://xxx/debug/pprof/heap 针对内存的
+  1)、go tool pprof http://xxxx/debug/pprof/profile 针对`cpu`的<br>
+      go tool pprof http://xxx/debug/pprof/heap 针对`内存`的
       
   2)、使用top[N]命令查看那些最消耗cpu,那些最消耗内存<br>
           接着可以使用peek命令看调用情况或者使用list命令查看源码<br>
