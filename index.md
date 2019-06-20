@@ -15,3 +15,4 @@
 * B [ServeMux解读](https://github.com/zhongyinghe/go-web/blob/master/ServeMux.md)
 * C [性能监控](https://github.com/zhongyinghe/go-web/blob/master/cpm.md)
 * D [网站安全](https://github.com/zhongyinghe/go-web/blob/master/security.md)
+* E [job/worker模式](job-worker.md)
